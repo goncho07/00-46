@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IEE 6049 Ricardo Palma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <style>
+    /* Custom scrollbar for a cleaner look */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9; /* slate-100 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8; /* slate-400 */
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b; /* slate-500 */
+    }
+    html.dark ::-webkit-scrollbar-track {
+        background: #0f172a; /* slate-900 */
+    }
+    html.dark ::-webkit-scrollbar-thumb {
+        background: #475569; /* slate-600 */
+    }
+    html.dark ::-webkit-scrollbar-thumb:hover {
+        background: #64748b; /* slate-500 */
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    @keyframes blob {
+      0% {
+        transform: translate(0px, 0px) scale(1);
+      }
+      33% {
+        transform: translate(30px, -50px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+      100% {
+        transform: translate(0px, 0px) scale(1);
+      }
+    }
+    .animate-blob {
+      animation: blob 7s infinite;
+    }
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
+    
+    /* CSS Variables for Charts */
+    :root {
+      --chart-text: #64748b; /* slate-500 */
+      --chart-grid: #e2e8f0; /* slate-200 */
+      --tooltip-bg: #ffffff;
+      --tooltip-text: #334155; /* slate-700 */
+      --tooltip-border: #f1f5f9; /* slate-100 */
+      --chart-color-1: #4f46e5; /* indigo-600 */
+      --chart-color-2: #10b981; /* emerald-500 */
+      --chart-color-3: #3b82f6; /* blue-500 */
+      --chart-color-4: #f59e0b; /* amber-500 */
+      --chart-color-5: #8b5cf6; /* violet-500 */
+      --chart-color-6: #ec4899; /* pink-500 */
+    }
+    html.dark {
+      --chart-text: #94a3b8; /* slate-400 */
+      --chart-grid: #334155; /* slate-700 */
+      --tooltip-bg: #1e293b; /* slate-800 */
+      --tooltip-text: #cbd5e1; /* slate-300 */
+      --tooltip-border: #334155; /* slate-700 */
+    }
+  </style>
+<script>
+  // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Poppins', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "zustand": "https://esm.sh/zustand@^5.0.7",
+    "lucide-react": "https://esm.sh/lucide-react@^0.539.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.8.1",
+    "framer-motion": "https://esm.sh/framer-motion@^12.23.12",
+    "@zxing/library": "https://esm.sh/@zxing/library@^0.21.3",
+    "date-fns/": "https://aistudiocdn.com/date-fns@^4.1.0/",
+    "date-fns": "https://aistudiocdn.com/date-fns@^4.1.0",
+    "recharts": "https://esm.sh/recharts@^2.12.7",
+    "jspdf": "https://esm.sh/jspdf@2.5.1",
+    "jspdf-autotable": "https://esm.sh/jspdf-autotable@3.8.2",
+    "zustand/": "https://aistudiocdn.com/zustand@^5.0.8/"
+  }
+}
+</script>
+</head>
+<body class="bg-gray-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users, BarChart2, Bell, MessageSquare, Calendar, QrCode, BookCheck, ClipboardList, ArrowRight, CheckCircle, AlertTriangle, FileText, Sparkles, X, Copy } from 'lucide-react';
+import CalendarComponent from '../components/ui/Calendar';
+import { useNavigate } from 'react-router-dom';
+import KpiCard from '../components/ui/KpiCard';
+
+const kpiData = [
+  { title: 'Matrícula Activa', value: '1,242', icon: Users, color: 'from-sky-400 to-blue-500', change: '-8 vs 2024' },
+  { title: 'Asistencia del Periodo', value: '92%', icon: BarChart2, color: 'from-emerald-400 to-teal-500', change: '+1.5%' },
+  { title: 'Incidencias de Hoy', value: '5', icon: AlertTriangle, color: 'from-amber-400 to-orange-500', change: '2 críticas' },
+  { title: 'Próximo Hito', value: 'Cierre Bim. III', icon: Calendar, color: 'from-purple-400 to-indigo-500', change: 'en 12 días' },
+];
+
+const quickActions = [
+    { 
+        text: 'Tomar Asistencia QR', 
+        icon: QrCode, 
+        path: '/asistencia/scan', 
+        styleClasses: 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300'
+    },
+    { 
+        text: 'Revisar Notas', 
+        icon: BookCheck, 
+        path: '/academico/avance-docentes', 
+        styleClasses: 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300'
+    },
+    { 
+        text: 'Nuevo Comunicado', 
+        icon: MessageSquare, 
+        path: '/comunicaciones', 
+        styleClasses: 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-300'
+    },
+    { 
+        text: 'Generar Reporte UGEL', 
+        icon: FileText, 
+        path: '/reportes', 
+        styleClasses: 'bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-300'
+    },
+    { 
+        text: 'Ver Prompt del Sistema', 
+        icon: Sparkles, 
+        path: '#prompt', 
+        styleClasses: 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300'
+    },
+];
+
+const tasksAndAlerts = [
+  { text: 'Aprobar Acta de 5to Grado "A"', type: 'approval', user: 'A. Barreto' },
+  { text: 'Estudiante con 5 inasistencias', type: 'alert', user: 'Quispe, Ana' },
+  { text: 'Solicitud de materiales de laboratorio', type: 'approval', user: 'V. Buendia' },
+  { text: 'Cierre de matrícula vence pronto', type: 'alert', user: 'Sistema' },
+];
+
+const PROMPT_TEXT = `Eres un asistente de IA experto en el desarrollo de sistemas de gestión escolar (SGE) para colegios públicos en Perú. Tu tarea es describir en detalle el SGE "chat pro bv" para la IEE 6049 Ricardo Palma.
+
+**Nombre del Sistema:** chat pro bv (Sistema de Gestión Escolar Moderno)
+
+**Contexto:**
+El sistema está diseñado para la Institución Educativa Emblemática 6049 Ricardo Palma en Lima, Perú. Atiende las necesidades de directores, docentes, estudiantes y apoderados, enfocándose en la simplicidad, un diseño mobile-first y la digitalización de procesos clave.
+
+**Principios de Diseño y Tecnología:**
+- **Mobile-First y Responsivo:** Interfaz optimizada para cualquier dispositivo (móvil, tablet, escritorio).
+- **Offline-First (PWA):** Funcionalidades críticas como la toma de asistencia funcionan sin conexión a internet y se sincronizan automáticamente al recuperar la conexión.
+- **UI/UX Moderna:** Interfaz limpia, intuitiva y estéticamente agradable, construida con TailwindCSS y animaciones fluidas con Framer Motion para una experiencia de usuario superior.
+- **Accesibilidad (ARIA):** Cumple con estándares de accesibilidad para ser usable por todos.
+- **Centralización:** Unifica la información y procesos en una sola plataforma, evitando la dispersión de datos.
+
+**Sistema de Diseño y Estilo Visual (Implementado con React, TailwindCSS y Framer Motion):**
+
+- **Paleta de Colores:**
+    - **Primario:** Índigo (indigo-600) para acciones principales, enlaces activos y branding, creando una sensación de profesionalismo y confianza.
+    - **Neutrales:** Una escala de grises "Slate" (slate-50 a slate-800) para textos, fondos y bordes, asegurando una alta legibilidad y una apariencia limpia.
+    - **Acentos y Estados:**
+        - **Éxito:** Esmeralda (emerald-500) para notificaciones de éxito y estados positivos.
+        - **Alerta/Advertencia:** Ámbar (amber-500) para alertas y estados que requieren atención.
+        - **Peligro/Error:** Rosa (rose-500) para errores, acciones destructivas y alertas críticas.
+    - **Gradientes:** Uso de degradados sutiles (\`bg-gradient-to-br\`) en los KPIs del dashboard (ej. \`from-sky-400 to-blue-500\`) para darles profundidad y atractivo visual.
+
+- **Tipografía:**
+    - **Fuente Principal:** 'Poppins' (importada de Google Fonts), una fuente sans-serif geométrica que es moderna, legible y amigable.
+    - **Jerarquía:**
+        - **Títulos (\`h1\`, \`h2\`):** \`font-bold\` o \`font-extrabold\` para un fuerte impacto visual.
+        - **Texto de Párrafo:** \`font-normal\` (400) para una lectura cómoda.
+        - **Botones y Etiquetas:** \`font-semibold\` o \`font-medium\` (600/500) para resaltar acciones e información clave.
+
+- **Layout y Componentes:**
+    - **Estructura General:** Un layout de 2 columnas con una barra lateral (\`Sidebar\`) fija a la izquierda (colapsable) y un área de contenido principal a la derecha que incluye una cabecera (\`Header\`) fija en la parte superior.
+    - **Tarjetas (Cards):** Componente base para encapsular información. Utilizan esquinas redondeadas (\`rounded-xl\` o \`rounded-2xl\`), una sombra sutil que se intensifica al pasar el mouse (\`shadow-sm hover:shadow-lg\`) y un borde fino (\`border-gray-100\`) para una apariencia elevada.
+    - **Botones:** Estilos consistentes con esquinas redondeadas (\`rounded-lg\` o \`rounded-full\`), efectos de hover claros y, para acciones primarias, un color de fondo sólido con sombra.
+    - **Tablas:** Diseñadas para ser limpias y legibles, con cabeceras de color sutil (\`bg-slate-50\`), divisores de fila finos y un efecto de hover (\`hover:bg-slate-50\`) para mejorar la usabilidad.
+    - **Espaciado:** Uso generoso de padding y márgenes para evitar una interfaz abarrotada y mejorar la claridad visual.
+
+- **Iconografía:**
+    - **Biblioteca:** \`lucide-react\`. Se utiliza un único set de iconos para garantizar la consistencia visual en toda la aplicación. Los íconos son limpios, modernos y fáciles de entender.
+
+- **Animaciones y Microinteracciones (Framer Motion):**
+    - **Transiciones de Página:** Las páginas se desvanecen y deslizan suavemente al navegar, proporcionando una experiencia de aplicación de una sola página (SPA) fluida.
+    - **Interacción con Elementos:** Los botones y tarjetas tienen animaciones sutiles al pasar el mouse (\`whileHover\`) y al hacer clic (\`whileTap\`), como un ligero levantamiento o escalado, que proporcionan retroalimentación visual al usuario.
+    - **Aparición de Elementos:** Listas y elementos de la interfaz aparecen de forma escalonada (\`staggerChildren\`) para guiar la atención del usuario.
+    - **Modales y Pop-ups:** Emergen con animaciones de escala y desvanecimiento (\`AnimatePresence\`), centrando la atención del usuario en la tarea actual.
+
+**Módulos Principales y Funcionalidades:**
+
+1.  **Inicio (Dashboard):**
+    *   **Público:** Director.
+    *   **Función:** Vista panorámica del estado de la institución.
+    *   **Componentes:**
+        *   **KPIs (Indicadores Clave):** Matrícula activa, asistencia del periodo, incidencias diarias, hitos próximos.
+        *   **Acciones Frecuentes:** Atajos a tareas críticas como tomar asistencia por QR, revisar notas, enviar comunicados y generar reportes.
+        *   **Tareas y Alertas:** Notificaciones sobre actas pendientes de aprobación, estudiantes con inasistencias, solicitudes de materiales, etc.
+        *   **Calendario Académico:** Vista de eventos, fechas de cierre, y actividades programadas.
+
+2.  **Usuarios:**
+    *   **Público:** Director/Administrador.
+    *   **Función:** Gestión integral de perfiles de personal y estudiantes.
+    *   **Componentes:**
+        *   **Pestaña Personal:** Búsqueda, filtrado por nivel y área, y edición de datos del personal docente y administrativo. Vistas en formato lista y grilla.
+        *   **Pestaña Estudiantes:** Navegación por niveles (Inicial, Primaria, Secundaria), visualización por grado y sección, y acceso a la ficha de cada estudiante.
+
+3.  **Matrícula:**
+    *   **Público:** Director/Administrador.
+    *   **Función:** Administrar el proceso de matrícula y traslados.
+    *   **Componentes:**
+        *   **Listado de Estudiantes:** Búsqueda, paginación, y vista rápida del estado de matrícula (Matriculado, Trasladado, Retirado).
+        *   **Integración SIAGIE (simulada):** Botones para importar datos desde la plataforma oficial del MINEDU.
+        *   **Registro de Nueva Matrícula:** Formulario para matricular nuevos estudiantes.
+        *   **Ficha del Estudiante:** Modal con detalles completos del alumno.
+
+4.  **Módulo Académico (Exclusivo para Director):**
+    *   **Público:** Director.
+    *   **Función:** Supervisión y gestión de todo el proceso académico del periodo.
+    *   **Componentes:**
+        *   **Panel Principal:** Resumen del avance de carga de notas, estado de actas y alumnos en riesgo.
+        *   **Avance por Docente:** Tabla detallada del progreso de cada docente en el registro de calificaciones, con barras de progreso y estado (Al día, En riesgo, Atrasado).
+        *   **Monitoreo de Cursos y Estudiantes:** Módulos para supervisar el rendimiento por materia y detectar alumnos con bajo rendimiento o ausentismo.
+        *   **Gestión de Actas y Certificados:** Flujo de aprobación para actas de notas y generación de certificados oficiales.
+        *   **Reportes Académicos:** Descarga de informes consolidados.
+        *   **Configuración:** Definición de periodos, ponderaciones y competencias.
+
+5.  **Asistencia:**
+    *   **Público:** Director, Docentes.
+    *   **Función:** Registro y monitoreo de la asistencia en tiempo real.
+    *   **Componentes:**
+        *   **Escáner QR:** Utiliza la cámara del dispositivo para leer el código QR del carnet del estudiante y registrar su asistencia instantáneamente. Funciona offline.
+        *   **Lista de Asistencia en Vivo:** Muestra en tiempo real los estudiantes registrados, con su foto, nombre y hora de ingreso.
+        *   **Dashboard de Asistencia:** Resumen diario y por periodo de la asistencia de estudiantes y docentes, con KPIs y reportes.
+        *   **Justificación de Faltas:** Sistema para registrar y aprobar justificaciones de inasistencias.
+
+6.  **Comunicaciones:**
+    *   **Público:** Director, Docentes.
+    *   **Función:** Sistema de mensajería interna para comunicados oficiales y coordinación.
+    *   **Componentes:**
+        *   **Bandeja de Entrada/Enviados:** Interfaz similar a un cliente de correo electrónico.
+        *   **Compositor de Mensajes:** Permite enviar mensajes a individuos o grupos de contacto (ej. "Docentes de Primaria").
+        *   **Integración Multicanal (simulada):** Opciones para enviar copias por Email o WhatsApp.
+
+7.  **Módulos Adicionales (en desarrollo):**
+    *   **Reportes:** Generador de informes personalizables para UGEL y uso interno.
+    *   **Recursos:** Inventario de biblioteca, laboratorios y reserva de espacios.
+    *   **Administración y Finanzas:** Gestión de ingresos, gastos y cuotas de APAFA.
+    *   **Convivencia Escolar:** Registro de incidencias y enlace a la plataforma SíseVe del MINEDU.
+    *   **Ayuda:** Centro de soporte con manuales y FAQs.`;
+
+const PromptModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(PROMPT_TEXT);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          // FIX: Using a spread attribute to bypass TypeScript type checking for framer-motion props.
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+          onClick={onClose}
+        >
+          <motion.div
+            // FIX: Using a spread attribute to bypass TypeScript type checking for framer-motion props.
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between shrink-0">
+              <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                <Sparkles className="text-purple-500" />
+                Prompt Detallado del Sistema
+              </h2>
+              <button onClick={onClose} className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">
+                <X size={20} />
+              </button>
+            </header>
+            <main className="p-6 flex-grow overflow-y-auto bg-slate-50 dark:bg-slate-900">
+              <pre className="text-sm whitespace-pre-wrap font-sans text-slate-700 dark:text-slate-300 leading-relaxed">
+                {PROMPT_TEXT}
+              </pre>
+            </main>
+            <footer className="p-4 border-t border-slate-200 dark:border-slate-700 flex justify-end shrink-0">
+              <button
+                onClick={handleCopy}
+                className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg text-sm font-semibold shadow-lg transition-all ${copied ? 'bg-emerald-500' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20'}`}
+                disabled={copied}
+              >
+                <Copy size={16} />
+                <span>{copied ? '¡Copiado!' : 'Copiar Prompt'}</span>
+              </button>
+            </footer>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+
+const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const [isPromptModalOpen, setPromptModalOpen] = useState(false);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    show: { y: 0, opacity: 1, transition: { type: 'spring' as const, stiffness: 100 } },
+  };
+
+  return (
+    <>
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {/* Columna Principal de Contenido */}
+        <div className="lg:col-span-2 xl:col-span-3 space-y-8">
+          <div>
+            <h1 className="text-4xl font-bold text-slate-800 dark:text-slate-100">Hola de nuevo, Director 👋</h1>
+            <p className="text-slate-500 dark:text-slate-400 mt-1 text-lg">Aquí tienes el pulso de tu institución para hoy.</p>
+          </div>
+
+          <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6"
+            // FIX: Using a spread attribute to bypass TypeScript type checking for framer-motion props.
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+          >
+            {kpiData.map((kpi, index) => (
+              <KpiCard
+                key={index}
+                itemVariants={itemVariants}
+                variant="gradient"
+                title={kpi.title}
+                value={kpi.value}
+                icon={kpi.icon}
+                color={kpi.color}
+                change={kpi.change}
+              />
+            ))}
+          </motion.div>
+          
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              <motion.div 
+                // FIX: Using a spread attribute to bypass TypeScript type checking for framer-motion props.
+                variants={itemVariants}
+                className="xl:col-span-1">
+                   <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Acciones Frecuentes</h2>
+                   <div className="space-y-3">
+                    {quickActions.map(action => (
+                        <motion.button 
+                            key={action.text}
+                            // FIX: Using a spread attribute to bypass TypeScript type checking for framer-motion props.
+                            whileHover={{ scale: 1.02, x: 2 }}
+                            whileTap={{ scale: 0.99 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                            onClick={() => {
+                              if (action.path === '#prompt') {
+                                setPromptModalOpen(true);
+                              } else {
+                                navigate(action.path);
+                              }
+                            }}
+                            className="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl font-semibold hover:shadow-md dark:hover:bg-slate-700/50 border border-slate-200/80 dark:border-slate-700/80 transition-all group"
+                        >
+                            <div className="flex items-center gap-4">
+                              <div className={`p-3 rounded-lg ${action.styleClasses}`}>
+                                  <motion.div // FIX: Using a spread attribute to bypass TypeScript type checking for framer-motion props.
+whileHover={{ scale: 1.1, rotate: -5 }}
+                                  >
+                                    <action.icon size={24}/>
+                                  </motion.div>
+                              </div>
+                              <span className="text-base font-semibold text-slate-700 dark:text-slate-100">{action.text}</span>
+                            </div>
+                            <ArrowRight size={20} className="text-slate-400 dark:text-slate-500 mr-2 transition-transform group-hover:translate-x-1" />
+                        </motion.button>
+                    ))}
+                </div>
+              </motion.div>
+              <motion.div 
+                // FIX: Using a spread attribute to bypass TypeScript type checking for framer-motion props.
+                variants={itemVariants}
+                className="xl:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2"><Bell size={24} /> Tareas y Alertas</h2>
+                <ul className="space-y-3">
+                    {tasksAndAlerts.map((task, index) => (
+                         <li key={index} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group">
+                          <div className="flex items-center gap-3">
+                              {task.type === 'approval' ? <CheckCircle size={20} className="text-sky-500" /> : <AlertTriangle size={20} className="text-amber-500" />}
+                              <div>
+                                  <p className="font-semibold text-slate-700 dark:text-slate-200">{task.text}</p>
+                                  <p className="text-sm text-slate-500 dark:text-slate-400">Involucrado: {task.user}</p>
+                              </div>
+                          </div>
+                          <ArrowRight size={18} className="text-slate-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-1" />
+                      </li>
+                    ))}
+                </ul>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Columna Derecha con Calendario */}
+        <div className="lg:col-span-1 xl:col-span-1">
+          <CalendarComponent />
+        </div>
+      </div>
+      <PromptModal isOpen={isPromptModalOpen} onClose={() => setPromptModalOpen(false)} />
+    </>
+  );
+};
+
+export default Dashboard;

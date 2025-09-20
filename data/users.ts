@@ -1,0 +1,33 @@
+import { Staff } from '../types';
+
+export const staff: Staff[] = [
+  // Administrativos
+  { dni: '10203040', name: 'GOMEZ PEREZ, MARIA ELENA', area: 'Secretaría Académica', role: 'Secretaria', avatarUrl: 'https://picsum.photos/seed/10203040/100/100', category: 'Administrativo', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-28T10:00:00Z', tags: ['admin-principal'], attendancePercentage: 98 },
+  { dni: '20304050', name: 'RAMIREZ SOTO, JUAN CARLOS', area: 'Administración', role: 'Jefe de Administración', avatarUrl: 'https://picsum.photos/seed/20304050/100/100', category: 'Administrativo', status: 'Activo', sede: 'Sur', lastLogin: '2025-07-27T11:30:00Z', tags: [], attendancePercentage: 100 },
+  
+  // Apoyo
+  { dni: '07673115', name: 'CORDOVA MONTERO ANGEL ROSARIO', area: 'PIP', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/07673115/100/100', category: 'Apoyo', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T08:00:00Z', tags: ['tecnologia'], attendancePercentage: 95 },
+  { dni: '08046665', name: 'VEGA MARÓN GREGORIO', area: 'PIP', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/08046665/100/100', category: 'Apoyo', status: 'Inactivo', sede: 'Norte', lastLogin: '2025-05-10T14:00:00Z', tags: ['tecnologia'], attendancePercentage: 90 },
+  { dni: '45480502', name: 'DIAZ ROMERO MIRELLA MARTHA', area: 'PSICÓLOGO DOCENTE', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/45480502/100/100', category: 'Apoyo', status: 'Activo', sede: 'Sur', lastLogin: '2025-07-26T15:20:00Z', tags: ['bienestar'], attendancePercentage: 99 },
+  { dni: '10106071', name: 'ZUÑIGA CUYUBAMBA MARCO ANTONIO', area: 'PSICÓLOGO JEC', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/10106071/100/100', category: 'Apoyo', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-28T12:10:00Z', tags: ['bienestar'], attendancePercentage: 100 },
+  { dni: '71829882', name: 'FLORES RIVERA JHOSSEL ANDERSON', area: 'PROFESOR DE BANDA', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/71829882/100/100', category: 'Apoyo', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T09:45:00Z', tags: ['extracurricular'], attendancePercentage: 97 },
+  
+  // Docentes
+  { dni: '42487716', name: 'ALLAUCA VALENZUELA NATALY', area: 'Inicial', role: 'Docente_Inicial', avatarUrl: 'https://picsum.photos/seed/42487716/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T08:15:00Z', tags: [], notesProgress: 100, attendancePercentage: 98 },
+  { dni: '44358023', name: 'BARRETO BARRÓN AURIA CAROLINE', area: 'Inicial', role: 'Docente_Inicial', avatarUrl: 'https://picsum.photos/seed/44358023/100/100', category: 'Docente', status: 'Activo', sede: 'Sur', lastLogin: '2025-07-28T18:00:00Z', tags: [], notesProgress: 95, attendancePercentage: 100 },
+  { dni: '09747266', name: 'BUENDIA SANTIAGO VLADIMIR', area: 'CIENCIA Y TECNOLOGÍA', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/09747266/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T11:00:00Z', tags: ['jefe-area'], notesProgress: 88, attendancePercentage: 96 },
+  { dni: '08166682', name: 'AQUINO POMA FREDDY', area: 'COMUNICACIÓN', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/08166682/100/100', category: 'Docente', status: 'Suspendido', sede: 'Norte', lastLogin: '2025-06-30T10:00:00Z', tags: [], notesProgress: 55, attendancePercentage: 85 },
+  { dni: '21874063', name: 'SOTELO RODRÍGUEZ FELIX YVAN', area: 'Primaria', role: 'Docente_Primaria', avatarUrl: 'https://picsum.photos/seed/21874063/100/100', category: 'Docente', status: 'Activo', sede: 'Sur', lastLogin: '2025-07-25T09:00:00Z', tags: ['coordinador'], notesProgress: 75, attendancePercentage: 94 },
+  { dni: '21861588', name: 'VIZCARRA HERRERA GUSTAVO ALEJANDRO', area: 'EDUCACIÓN FÍSICA', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/21861588/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T10:30:00Z', tags: [], notesProgress: 100, attendancePercentage: 99 },
+];
+const additionalStaff: Staff[] = [
+    { dni: '10615311', name: 'CHONTA CHONTA LUZ MARÍA', area: 'Inicial', role: 'Docente_Inicial', avatarUrl: 'https://picsum.photos/seed/10615311/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T08:15:00Z', tags: [], notesProgress: 100, attendancePercentage: 98 },
+    { dni: '06666334', name: 'FLORES DE LA CRUZ PATRICIA MARIBEL', area: 'Inicial', role: 'Docente_Inicial', avatarUrl: 'https://picsum.photos/seed/06666334/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-28T08:15:00Z', tags: [], notesProgress: 92, attendancePercentage: 97 },
+    { dni: '07557811', name: 'VILLEGAS VALDIVIA GLORIA LUZ', area: 'Primaria', role: 'Docente_Primaria', avatarUrl: 'https://picsum.photos/seed/07557811/100/100', category: 'Docente', status: 'Activo', sede: 'Sur', lastLogin: '2025-06-20T08:15:00Z', tags: [], notesProgress: 85, attendancePercentage: 100 },
+    { dni: '45319805', name: 'ZAPATA LUNA CINTHIA MAYURI', area: 'Primaria', role: 'Docente_Primaria', avatarUrl: 'https://picsum.photos/seed/45319805/100/100', category: 'Docente', status: 'Inactivo', sede: 'Sur', lastLogin: '2025-04-20T08:15:00Z', tags: [], notesProgress: 0, attendancePercentage: 0 },
+    { dni: '09312131', name: 'PAREDES MANSILLA MARILYN FANNY', area: 'Primaria', role: 'Docente_Primaria', avatarUrl: 'https://picsum.photos/seed/09312131/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-26T08:15:00Z', tags: [], notesProgress: 98, attendancePercentage: 99 },
+    { dni: '10088081', name: 'CASTRO MONTES LILI', area: 'Primaria', role: 'Docente_Primaria', avatarUrl: 'https://picsum.photos/seed/10088081/100/100', category: 'Docente', status: 'Activo', sede: 'Sur', lastLogin: '2025-07-29T11:20:00Z', tags: [], notesProgress: 100, attendancePercentage: 100 },
+    { dni: '43868005', name: 'FIESTAS POLO ANAMARIA ESTHER', area: 'ARTE Y CULTURA', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/43868005/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: null, tags: ['contratado'], notesProgress: 70, attendancePercentage: 92 },
+    { dni: '09161603', name: 'PUERTA REYNA LUIS HUMBERTO', area: 'ARTE Y CULTURA', role: 'Docente_Secundaria', avatarUrl: 'https://picsum.photos/seed/09161603/100/100', category: 'Docente', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T14:00:00Z', tags: ['nombrado'], notesProgress: 99, attendancePercentage: 98 },
+];
+staff.push(...additionalStaff);

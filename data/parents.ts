@@ -1,0 +1,12 @@
+import { ParentTutor } from '../types';
+
+export const parents: ParentTutor[] = [
+  { dni: '40123456', name: 'GRANDE SILVA, MARÍA', email: 'mgrande@example.com', phone: '987654321', avatarUrl: 'https://picsum.photos/seed/40123456/100/100', relation: 'Madre', status: 'Activo', sede: 'Norte', lastLogin: null, verified: false, tags: [] },
+  { dni: '40234567', name: 'ACUACHE PEREZ, JUAN', email: 'jacuache@example.com', phone: '987654322', avatarUrl: 'https://picsum.photos/seed/40234567/100/100', relation: 'Padre', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-21T20:00:00Z', verified: true, tags: [] },
+  { dni: '40345678', name: 'CHUMBE VARGAS, SOFÍA', email: 'schumbe@example.com', phone: '987654323', avatarUrl: 'https://picsum.photos/seed/40345678/100/100', relation: 'Madre', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-28T21:00:00Z', verified: true, tags: ['delegado'] },
+  { dni: '40456789', name: 'ALVARADO DÍAZ, LUIS', email: 'lalvarado@example.com', phone: '987654324', avatarUrl: 'https://picsum.photos/seed/40456789/100/100', relation: 'Padre', status: 'Inactivo', sede: 'Norte', lastLogin: '2025-04-15T18:30:00Z', verified: true, tags: [] },
+  { dni: '40567890', name: 'PATIÑO LÓPEZ, CARLA', email: 'cpatino@example.com', phone: '987654325', avatarUrl: 'https://picsum.photos/seed/40567890/100/100', relation: 'Apoderado Legal', status: 'Activo', sede: 'Norte', lastLogin: '2025-07-29T07:00:00Z', verified: true, tags: [] },
+  { dni: '40678901', name: 'CASA TORRES, ROBERTO', email: 'rcasa@example.com', phone: '987654326', avatarUrl: 'https://picsum.photos/seed/40678901/100/100', relation: 'Padre', status: 'Activo', sede: 'Sur', lastLogin: '2025-07-26T22:00:00Z', verified: false, tags: [] },
+  { dni: '40789012', name: 'MORALES CASTRO, ISABEL', email: 'imorales@example.com', phone: '987654327', avatarUrl: 'https://picsum.photos/seed/40789012/100/100', relation: 'Madre', status: 'Activo', sede: 'Sur', lastLogin: '2025-07-27T19:45:00Z', verified: true, tags: [] },
+  { dni: '40890123', name: 'RODRIGUEZ MENDOZA, PEDRO', email: 'prodriguez@example.com', phone: '987654328', avatarUrl: 'https://picsum.photos/seed/40890123/100/100', relation: 'Padre', status: 'Suspendido', sede: 'Norte', lastLogin: '2025-07-23T10:00:00Z', verified: true, tags: [] },
+];
