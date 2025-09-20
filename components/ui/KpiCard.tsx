@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { LucideProps } from 'lucide-react';
 
 interface KpiCardProps {
@@ -27,9 +27,29 @@ const KpiCard: React.FC<KpiCardProps> = ({
   className = '',
   itemVariants,
 }) => {
+  const shouldReduceMotion = useReducedMotion();
+  const interactiveMotionProps = onClick && !shouldReduceMotion
+    ? { whileHover: { y: -3, scale: 1.02 }, transition: { type: 'spring', stiffness: 300, damping: 15 } }
+    : {};
+
+  const interactiveProps = onClick
+    ? {
+        type: 'button' as const,
+        onClick,
+        'aria-pressed': active,
+        'aria-label': `${title}: ${value}`,
+        role: 'button' as const,
+      }
+    : {};
+
+  const BaseComponent = onClick ? motion.button : motion.div;
+
   if (variant === 'gradient') {
+    const Wrapper = onClick ? motion.button : motion.div;
     return (
-      <motion.div
+      <Wrapper
+        {...interactiveMotionProps}
+        {...interactiveProps}
         {...(itemVariants ? { variants: itemVariants } : {})}
         className={`relative overflow-hidden rounded-2xl text-white p-6 shadow-lg flex flex-col justify-between h-44 bg-gradient-to-br ${color} ${className}`}
       >
@@ -45,16 +65,16 @@ const KpiCard: React.FC<KpiCardProps> = ({
             <span className="text-xs bg-white/20 px-2 py-1 rounded-full font-semibold">{change}</span>
           </div>
         )}
-      </motion.div>
+      </Wrapper>
     );
   }
 
   // Flat variant
   return (
-    <motion.div
-      {...{ whileHover: onClick ? { y: -3, scale: 1.02 } : {}, transition: { type: 'spring', stiffness: 300, damping: 15 } }}
-      onClick={onClick}
-      className={`p-4 rounded-xl border transition-all duration-200 ${onClick ? 'cursor-pointer' : ''} ${active ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'} ${className}`}
+    <BaseComponent
+      {...interactiveMotionProps}
+      {...interactiveProps}
+      className={`p-4 rounded-xl border transition-all duration-200 text-left ${onClick ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-offset-slate-900' : ''} ${active ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'} ${className}`}
     >
         <div className="flex items-center justify-between">
             <p className={`font-semibold ${active ? 'text-white/90' : 'text-slate-600 dark:text-slate-300'}`}>{title}</p>
@@ -64,7 +84,7 @@ const KpiCard: React.FC<KpiCardProps> = ({
         {change && (
             <p className={`text-xs mt-1 ${active ? 'text-white/70' : 'text-slate-500 dark:text-slate-400'}`}>{change}</p>
         )}
-    </motion.div>
+    </BaseComponent>
   );
 };
 

@@ -23,6 +23,11 @@ interface UserFiltersProps {
 }
 
 const UserFilters: React.FC<UserFiltersProps> = ({ activeTab, filters, setFilters, savedViews, onSelectView, onRemoveView }) => {
+    const roleFilterId = React.useId();
+    const levelFilterId = React.useId();
+    const statusFilterId = React.useId();
+    const tagFilterId = React.useId();
+    const descriptionId = React.useId();
 
     const handleFilterChange = (key: keyof typeof filters, value: string) => {
         setFilters(prev => ({ ...prev, [key]: value }));
@@ -49,55 +54,125 @@ const UserFilters: React.FC<UserFiltersProps> = ({ activeTab, filters, setFilter
     }, [activeTab]);
 
     return (
-        <aside className="lg:col-span-1 space-y-6">
+        <aside className="lg:col-span-1 space-y-6" aria-label="Panel de filtros de usuarios">
             <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-                <h3 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-4"><Filter size={18}/> Filtros</h3>
-                <div className="space-y-4">
-                    {savedViews.length > 0 && (
-                        <div>
-                            <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Vistas Guardadas</label>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                                {savedViews.map(view => (
-                                    <div key={view.id} className="group flex items-center">
-                                        <button onClick={() => onSelectView(view)} className="px-2 py-1 text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 rounded-l-md group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/30 transition-colors">
-                                            {view.name}
-                                        </button>
-                                        <button onClick={() => onRemoveView(view.id)} className="px-1.5 py-1 bg-indigo-100 dark:bg-indigo-500/20 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/30 rounded-r-md text-indigo-400 hover:text-rose-500 transition-colors">
-                                            <Trash2 size={12} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    {contextualUserRoles.length > 0 && (
-                        <div>
-                            <label htmlFor="role-filter" className="text-sm font-medium text-slate-500 dark:text-slate-400">Rol de Usuario</label>
-                            <select id="role-filter" value={filters.role} onChange={e => handleFilterChange('role', e.target.value)} className="w-full mt-1 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-                                {contextualUserRoles.map(role => <option key={role} value={role}>{role}</option>)}
-                            </select>
-                        </div>
-                    )}
-                    {activeTab !== 'Apoderados' && (
-                        <div>
-                            <label htmlFor="level-filter" className="text-sm font-medium text-slate-500 dark:text-slate-400">Nivel</label>
-                            <select id="level-filter" value={filters.level} onChange={e => handleFilterChange('level', e.target.value)} className="w-full mt-1 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-                                {USER_LEVELS.map(level => <option key={level} value={level}>{level}</option>)}
-                            </select>
-                        </div>
-                    )}
+                <div className="flex items-center gap-2 mb-4">
+                    <Filter size={18} className="text-indigo-500" />
                     <div>
-                        <label htmlFor="status-filter" className="text-sm font-medium text-slate-500 dark:text-slate-400">Estado</label>
-                        <select id="status-filter" value={filters.status} onChange={e => handleFilterChange('status', e.target.value)} className="w-full mt-1 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-                            {USER_STATUSES.map(status => <option key={status} value={status}>{status}</option>)}
-                        </select>
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-100">Filtrar resultados</h3>
+                        <p id={descriptionId} className="text-xs text-slate-500 dark:text-slate-400">Refina la tabla según rol, estado y etiquetas clave.</p>
                     </div>
-                    <div>
-                        <label htmlFor="tag-filter" className="text-sm font-medium text-slate-500 dark:text-slate-400">Etiquetas</label>
-                        <input id="tag-filter" type="text" value={filters.tagFilter} onChange={e => handleFilterChange('tagFilter', e.target.value)} placeholder="Ej: beca, refuerzo..." className="w-full mt-1 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"/>
-                    </div>
-                    <Button variant="tertiary" onClick={resetFilters} className="w-full !justify-center">Limpiar Filtros</Button>
                 </div>
+                <form className="space-y-5" aria-describedby={descriptionId}>
+                    {savedViews.length > 0 && (
+                        <section aria-label="Vistas guardadas" className="space-y-2">
+                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Vistas personalizadas</p>
+                            <ul className="flex flex-wrap gap-1" role="list">
+                                {savedViews.map(view => (
+                                    <li key={view.id} role="listitem">
+                                        <div className="group flex items-center overflow-hidden rounded-md border border-indigo-200 dark:border-indigo-500/40">
+                                            <button
+                                                type="button"
+                                                onClick={() => onSelectView(view)}
+                                                className="px-2 py-1 text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-200 transition-colors group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20"
+                                                aria-label={`Aplicar vista ${view.name}`}
+                                            >
+                                                {view.name}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => onRemoveView(view.id)}
+                                                className="px-1.5 py-1 text-indigo-400 hover:text-rose-500 dark:text-indigo-300 transition-colors"
+                                                aria-label={`Eliminar vista ${view.name}`}
+                                            >
+                                                <Trash2 size={12} />
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
+
+                    {contextualUserRoles.length > 0 && (
+                        <section>
+                            <label htmlFor={roleFilterId} className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                                Rol de usuario
+                            </label>
+                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Muestra solo perfiles del tipo seleccionado.</p>
+                            <select
+                                id={roleFilterId}
+                                value={filters.role}
+                                onChange={e => handleFilterChange('role', e.target.value)}
+                                className="w-full mt-2 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                            >
+                                {contextualUserRoles.map(role => (
+                                    <option key={role} value={role}>{role}</option>
+                                ))}
+                            </select>
+                        </section>
+                    )}
+
+                    {activeTab !== 'Apoderados' && (
+                        <section>
+                            <label htmlFor={levelFilterId} className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                                Nivel educativo
+                            </label>
+                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Ideal para ubicar aulas o áreas específicas.</p>
+                            <select
+                                id={levelFilterId}
+                                value={filters.level}
+                                onChange={e => handleFilterChange('level', e.target.value)}
+                                className="w-full mt-2 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                            >
+                                {USER_LEVELS.map(level => (
+                                    <option key={level} value={level}>{level}</option>
+                                ))}
+                            </select>
+                        </section>
+                    )}
+
+                    <section>
+                        <label htmlFor={statusFilterId} className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                            Estado de acceso
+                        </label>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Controla el estado operativo de las cuentas.</p>
+                        <select
+                            id={statusFilterId}
+                            value={filters.status}
+                            onChange={e => handleFilterChange('status', e.target.value)}
+                            className="w-full mt-2 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        >
+                            {USER_STATUSES.map(status => (
+                                <option key={status} value={status}>{status}</option>
+                            ))}
+                        </select>
+                    </section>
+
+                    <section>
+                        <label htmlFor={tagFilterId} className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                            Etiquetas
+                        </label>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Busca por atributos rápidos como becas, refuerzo o comités.</p>
+                        <input
+                            id={tagFilterId}
+                            type="text"
+                            value={filters.tagFilter}
+                            onChange={e => handleFilterChange('tagFilter', e.target.value)}
+                            placeholder="Ej: beca, refuerzo..."
+                            className="w-full mt-2 p-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        />
+                    </section>
+
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        onClick={resetFilters}
+                        className="w-full !justify-center"
+                    >
+                        Limpiar filtros
+                    </Button>
+                </form>
             </div>
         </aside>
     );
