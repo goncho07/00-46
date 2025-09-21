@@ -21,10 +21,10 @@ const UserKpiCards: React.FC<UserKpiCardsProps> = ({ users, activeStatus, onStat
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard title="Total" value={kpiCounts.Total} active={activeStatus === 'Todos'} onClick={() => onStatusChange('Todos')} icon={Users} />
-            <KpiCard title="Activos" value={kpiCounts.Activos} active={activeStatus === 'Activo'} onClick={() => onStatusChange('Activo')} icon={CheckCircle} />
-            <KpiCard title="Inactivos" value={kpiCounts.Inactivos} active={activeStatus === 'Inactivo'} onClick={() => onStatusChange('Inactivo')} icon={PowerOff} />
-            <KpiCard title="Suspendidos" value={kpiCounts.Suspendidos} active={activeStatus === 'Suspendido'} onClick={() => onStatusChange('Suspendido')} icon={UserX} />
+            <KpiCard title="Total" value={kpiCounts.Total} change="Ver toda la comunidad" active={activeStatus === 'Todos'} onClick={() => onStatusChange('Todos')} icon={Users} />
+            <KpiCard title="Activos" value={kpiCounts.Activos} change="Cuentas con acceso habilitado" active={activeStatus === 'Activo'} onClick={() => onStatusChange('Activo')} icon={CheckCircle} />
+            <KpiCard title="Inactivos" value={kpiCounts.Inactivos} change="Incluye egresados" active={activeStatus === 'Inactivo'} onClick={() => onStatusChange('Inactivo')} icon={PowerOff} />
+            <KpiCard title="Suspendidos" value={kpiCounts.Suspendidos} change="Revisar incidencias recientes" active={activeStatus === 'Suspendido'} onClick={() => onStatusChange('Suspendido')} icon={UserX} />
         </div>
     );
 };

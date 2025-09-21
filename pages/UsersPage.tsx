@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-    Users, UploadCloud, Plus
+    Users, UploadCloud, Plus, X
 } from 'lucide-react';
 import { staff as initialStaff } from '../data/users';
 import { students as initialStudents } from '../data/students';
@@ -95,6 +95,33 @@ const UsersPage: React.FC = () => {
     const isStudent = (user: GenericUser): user is Student => 'studentCode' in user;
     const isParent = (user: GenericUser): user is ParentTutor => 'relation' in user;
 
+    const deriveRole = (user: GenericUser) => {
+        if (isStudent(user)) return 'Estudiante';
+        if (isParent(user)) return 'Apoderado';
+        if (isStaff(user)) return user.category;
+        return 'N/A';
+    };
+
+    const getSortableValue = (user: GenericUser, key: SortConfig['key']) => {
+        switch (key) {
+            case 'fullName':
+            case 'name':
+                return isStudent(user) ? user.fullName : user.name;
+            case 'role':
+                return deriveRole(user);
+            case 'grade':
+                if (isStudent(user)) return `${user.grade} ${user.section}`;
+                if (isStaff(user)) return user.area;
+                return '';
+            case 'status':
+                return user.status;
+            case 'sede':
+                return user.sede;
+            default:
+                return (user as any)[key] ?? '';
+        }
+    };
+
     const tabFilteredUsers = useMemo(() => {
         if (activeTab === 'Todos') return users;
         if (activeTab === 'Personal') return users.filter(isStaff);
@@ -102,6 +129,15 @@ const UsersPage: React.FC = () => {
         if (activeTab === 'Apoderados') return users.filter(isParent);
         return users;
     }, [users, activeTab]);
+
+    const activeFilterChips = [
+        filters.searchTerm ? { key: 'search', label: `Búsqueda: “${filters.searchTerm}”`, onRemove: () => setFilters(prev => ({ ...prev, searchTerm: '' })) } : null,
+        filters.tagFilter ? { key: 'tag', label: `Etiqueta: ${filters.tagFilter}`, onRemove: () => setFilters(prev => ({ ...prev, tagFilter: '' })) } : null,
+        filters.status !== 'Todos' ? { key: 'status', label: `Estado: ${filters.status}`, onRemove: () => setFilters(prev => ({ ...prev, status: 'Todos' })) } : null,
+        filters.level !== 'Todos' ? { key: 'level', label: `Nivel: ${filters.level}`, onRemove: () => setFilters(prev => ({ ...prev, level: 'Todos' })) } : null,
+        filters.role !== 'Todos' ? { key: 'role', label: `Rol: ${filters.role}`, onRemove: () => setFilters(prev => ({ ...prev, role: 'Todos' })) } : null,
+        activeTab !== 'Todos' ? { key: 'tab', label: `Segmento: ${activeTab}`, onRemove: () => { setActiveTab('Todos'); setFilters(prev => ({ ...prev, role: 'Todos' })); } } : null,
+    ].filter(Boolean) as { key: string; label: string; onRemove: () => void }[];
 
     const filteredUsers = useMemo(() => {
         return tabFilteredUsers
@@ -127,14 +163,18 @@ const UsersPage: React.FC = () => {
             .sort((a, b) => {
                 if (!sortConfig) return 0;
                 const { key, direction } = sortConfig;
-                const valA = (a as any)[key];
-                const valB = (b as any)[key];
+                const valA = getSortableValue(a, key);
+                const valB = getSortableValue(b, key);
 
                 if (valA === null || valA === undefined) return 1;
                 if (valB === null || valB === undefined) return -1;
-                if (valA < valB) return direction === 'asc' ? -1 : 1;
-                if (valA > valB) return direction === 'asc' ? 1 : -1;
-                return 0;
+
+                if (typeof valA === 'number' && typeof valB === 'number') {
+                    return direction === 'asc' ? valA - valB : valB - valA;
+                }
+
+                const comparison = String(valA).localeCompare(String(valB), 'es', { sensitivity: 'base' });
+                return direction === 'asc' ? comparison : -comparison;
             });
     }, [tabFilteredUsers, debouncedSearch, filters, sortConfig]);
 
@@ -351,8 +391,8 @@ const UsersPage: React.FC = () => {
                     onRemoveView={(id) => removeView(id)}
                 />
 
-                <main className="lg:col-span-3 space-y-4">
-                    <UserKpiCards 
+                <main id="users-panel" className="lg:col-span-3 space-y-4" aria-live="polite">
+                    <UserKpiCards
                         users={tabFilteredUsers}
                         activeStatus={filters.status}
                         onStatusChange={(status) => setFilters(f => ({ ...f, status }))}
@@ -370,6 +410,34 @@ const UsersPage: React.FC = () => {
                         allUsers={users}
                         onSelect={handlePredictiveSearchSelect}
                     />
+
+                    {activeFilterChips.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-300" role="list" aria-label="Filtros activos">
+                            <span className="uppercase tracking-wide font-semibold text-[11px] text-slate-400 dark:text-slate-500">Filtros activos:</span>
+                            {activeFilterChips.map(chip => (
+                                <button
+                                    key={chip.key}
+                                    type="button"
+                                    onClick={chip.onRemove}
+                                    className="group inline-flex items-center gap-2 rounded-full border border-indigo-200 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-700 dark:text-indigo-200 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-slate-900"
+                                    aria-label={`Quitar ${chip.label}`}
+                                >
+                                    <span>{chip.label}</span>
+                                    <X size={12} aria-hidden className="transition-colors group-hover:text-rose-500" />
+                                </button>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setFilters({ searchTerm: '', tagFilter: '', status: 'Todos', level: 'Todos', role: 'Todos' });
+                                    setActiveTab('Todos');
+                                }}
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+                            >
+                                Limpiar todo
+                            </button>
+                        </div>
+                    )}
 
                     <UserTable
                         isLoading={isLoading}
